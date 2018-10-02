@@ -1,28 +1,51 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld/>
-  </div>
+    <main role='main' class='movie-wrapper'>
+        <h1>{{ title }}</h1>
+        <movie v-bind:selected-movie='selectedMovie'></movie>
+    </main>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
-
+import Vue from 'vue'
+import Movie from '@/components/Movie/Movie'
 export default {
-  name: 'App',
+  name: 'app',
   components: {
-    HelloWorld
+    Movie
+  },
+  data () {
+    return {
+      title: "Movues: find your tonight's plan",
+      selectedMovie: {}
+    }
+  },
+  mounted () {
+    this.searchMovie('deadpool-2')
+  },
+  methods: {
+    searchMovie (movie) {
+      return window
+        .fetch(`${Vue.config.movues.ENDPOINT}${movie}`)
+        .then(function (response) {
+          return response.json()
+        }).then(function (json) {
+          this.selectedMovie = json
+        }.bind(this))
+    }
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+<style scoped>
+.movie-wrapper {
+  height: 100vh;
+  max-width: 800px;
+  width: 90%;
+  margin: 0 auto;
+}
+.movie-wrapper > h1 {
+  font-weight: 300;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  margin: 0;
+  padding: 2rem;
 }
 </style>
